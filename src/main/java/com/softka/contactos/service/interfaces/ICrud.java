@@ -7,11 +7,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ICrud {
-    public List<Contacto> getList();
-
-    public List<Contacto> searchContacto(String dataToSearch);
 
     public Contacto createContacto(Contacto newContacto);
+    public List<Contacto> getList();
 
     Contacto updateContacto(Integer id, Contacto contacto);
 

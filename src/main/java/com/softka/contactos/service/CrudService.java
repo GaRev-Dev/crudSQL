@@ -21,12 +21,6 @@ public class CrudService implements ICrud {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Contacto> searchContacto(String dataToSearch) {
-        return contactoRepository.findByNombre(dataToSearch);
-    }
-
-    @Override
     @Transactional
     public Contacto createContacto(Contacto newContacto) {
         return contactoRepository.save(newContacto);
@@ -41,6 +35,12 @@ public class CrudService implements ICrud {
     @Override
     @Transactional
     public Contacto deleteContacto(Integer id) {
-        return null;
+        var contacto = contactoRepository.findById(id);
+        if (contacto.isPresent()) {
+            contactoRepository.delete(contacto.get());
+            return contacto.get();
+        } else {
+            return null;
+        }
     }
 }

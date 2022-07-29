@@ -21,6 +21,21 @@ public class CrudController {
     private Response response = new Response();
     private HttpStatus httpStatus = HttpStatus.OK;
 
+    @PostMapping(path = "/contacto")
+    public ResponseEntity<Response> createContacto(@RequestBody Contacto contacto) {
+        response.restart();
+        try {
+            log.info("Contacto a crear: {}", contacto);
+            response.data = crudService.createContacto(contacto);
+            httpStatus = HttpStatus.CREATED;
+        } catch (DataAccessException exception) {
+            getErrorMessageForResponse(exception);
+        } catch (Exception exception) {
+            getErrorMessageInternal(exception);
+        }
+        return new ResponseEntity(response, httpStatus);
+    }
+
     @GetMapping(path = "/contactos")
     public ResponseEntity<Response> index() {
         response.restart();
@@ -33,27 +48,18 @@ public class CrudController {
         return new ResponseEntity(response, httpStatus);
     }
 
-    @GetMapping(path = "/contacto/{dataToSearch}")
-    public ResponseEntity<Response> searchContactByNombreOrApellido(
-            @PathVariable(value = "dataToSearch") String dataToSearch
-    ) {
+    @DeleteMapping(path = "/contacto/{id}")
+    public ResponseEntity<Response> deleteContacto(@PathVariable(value="id") Integer id) {
         response.restart();
         try {
-            response.data = crudService.searchContacto(dataToSearch);
-            httpStatus = HttpStatus.OK;
-        } catch (Exception exception) {
-            getErrorMessageInternal(exception);
-        }
-        return new ResponseEntity(response, httpStatus);
-    }
-
-    @PostMapping(path = "/contacto")
-    public ResponseEntity<Response> createContacto(@RequestBody Contacto contacto) {
-        response.restart();
-        try {
-            log.info("Contacto a crear: {}", contacto);
-            response.data = crudService.createContacto(contacto);
-            httpStatus = HttpStatus.CREATED;
+            response.data = crudService.deleteContacto(id);
+            if (response.data == null) {
+                response.message = "El contacto no existe";
+                httpStatus = HttpStatus.NOT_FOUND;
+            } else {
+                response.message = "El contacto fue removido exitosamente";
+                httpStatus = HttpStatus.OK;
+            }
         } catch (DataAccessException exception) {
             getErrorMessageForResponse(exception);
         } catch (Exception exception) {
