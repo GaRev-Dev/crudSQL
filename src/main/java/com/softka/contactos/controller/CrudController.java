@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
@@ -29,6 +26,20 @@ public class CrudController {
         response.restart();
         try {
             response.data = crudService.getList();
+            httpStatus = HttpStatus.OK;
+        } catch (Exception exception) {
+            getErrorMessageInternal(exception);
+        }
+        return new ResponseEntity(response, httpStatus);
+    }
+
+    @GetMapping(path = "/contacto/{dataToSearch}")
+    public ResponseEntity<Response> searchContactByNombreOrApellido(
+            @PathVariable(value = "dataToSearch") String dataToSearch
+    ) {
+        response.restart();
+        try {
+            response.data = crudService.searchContacto(dataToSearch);
             httpStatus = HttpStatus.OK;
         } catch (Exception exception) {
             getErrorMessageInternal(exception);
@@ -60,7 +71,7 @@ public class CrudController {
 
     private void getErrorMessageForResponse(DataAccessException exception) {
         response.error = true;
-        if(exception.getRootCause() instanceof SQLException) {
+        if (exception.getRootCause() instanceof SQLException) {
             SQLException sqlEx = (SQLException) exception.getRootCause();
             var sqlErrorCode = sqlEx.getErrorCode();
             switch (sqlErrorCode) {

@@ -23,7 +23,7 @@ public class CrudService implements ICrud {
     @Override
     @Transactional(readOnly = true)
     public List<Contacto> searchContacto(String dataToSearch) {
-        return null;
+        return contactoRepository.findByNombre(dataToSearch);
     }
 
     @Override
