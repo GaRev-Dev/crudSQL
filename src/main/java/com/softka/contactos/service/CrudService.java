@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -28,12 +29,6 @@ public class CrudService implements ICrud {
 
     @Override
     @Transactional
-    public Contacto updateContacto(Integer id, Contacto contacto) {
-        return null;
-    }
-
-    @Override
-    @Transactional
     public Contacto deleteContacto(Integer id) {
         var contacto = contactoRepository.findById(id);
         if (contacto.isPresent()) {
@@ -43,4 +38,12 @@ public class CrudService implements ICrud {
             return null;
         }
     }
+
+    @Override
+    @Transactional
+    public Contacto updateContacto(Integer id, Contacto contacto) {
+        contacto.setId(id);
+        return contactoRepository.save(contacto);
+    }
+
 }

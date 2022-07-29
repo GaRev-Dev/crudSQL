@@ -28,6 +28,7 @@ public class CrudController {
             log.info("Contacto a crear: {}", contacto);
             response.data = crudService.createContacto(contacto);
             httpStatus = HttpStatus.CREATED;
+            response.message = "Contacto creado";
         } catch (DataAccessException exception) {
             getErrorMessageForResponse(exception);
         } catch (Exception exception) {
@@ -60,6 +61,23 @@ public class CrudController {
                 response.message = "El contacto fue removido exitosamente";
                 httpStatus = HttpStatus.OK;
             }
+        } catch (DataAccessException exception) {
+            getErrorMessageForResponse(exception);
+        } catch (Exception exception) {
+            getErrorMessageInternal(exception);
+        }
+        return new ResponseEntity(response, httpStatus);
+    }
+
+    @PutMapping(path = "/contacto/{id}")
+    public ResponseEntity<Response> updateContacto(
+            @RequestBody Contacto contacto,
+            @PathVariable(value="id") Integer id
+    ) {
+        response.restart();
+        try {
+            response.data = crudService.updateContacto(id, contacto);
+            httpStatus = HttpStatus.OK;
         } catch (DataAccessException exception) {
             getErrorMessageForResponse(exception);
         } catch (Exception exception) {
