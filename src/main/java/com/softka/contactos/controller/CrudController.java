@@ -14,6 +14,7 @@ import java.sql.SQLException;
 
 @Slf4j
 @RestController
+@CrossOrigin
 public class CrudController {
     @Autowired
     private CrudService crudService;
